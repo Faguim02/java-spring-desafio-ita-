@@ -1,9 +1,11 @@
 package com.example.itau.repository;
 
 import com.example.itau.model.TransacaoModel;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class TransacaoRespository {
     private List<TransacaoModel> transacaoModels;
 
