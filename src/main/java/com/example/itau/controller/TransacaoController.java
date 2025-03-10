@@ -1,17 +1,17 @@
 package com.example.itau.controller;
 
+import com.example.itau.dto.EstatisticaResDto;
 import com.example.itau.model.TransacaoModel;
 import com.example.itau.repository.TransacaoRespository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
+import java.util.DoubleSummaryStatistics;
+import java.util.List;
 
 @RestController
 public class TransacaoController {
@@ -46,5 +46,25 @@ public class TransacaoController {
         this.transacaoRespository.clear();
 
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/estatistica")
+    ResponseEntity<EstatisticaResDto> calculateStatistic() {
+        List<TransacaoModel> transacaoModels = this.transacaoRespository.findAllTransactions();
+
+        DoubleSummaryStatistics statistics = transacaoModels.stream()
+                .mapToDouble(TransacaoModel::getValor)
+                .summaryStatistics();
+
+        EstatisticaResDto estatisticaResDto = new EstatisticaResDto(
+                statistics.getCount(),
+                statistics.getSum(),
+                statistics.getAverage(),
+                statistics.getMin(),
+                statistics.getMax()
+        );
+
+        return ResponseEntity.status(HttpStatus.OK).body(estatisticaResDto);
+
     }
 }
