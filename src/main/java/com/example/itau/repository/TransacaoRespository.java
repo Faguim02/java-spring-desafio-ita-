@@ -4,10 +4,11 @@ import com.example.itau.model.TransacaoModel;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 @Repository
 public class TransacaoRespository {
-    private List<TransacaoModel> transacaoModels;
+    private final List<TransacaoModel> transacaoModels = new CopyOnWriteArrayList<>();
 
     public void save(TransacaoModel transacaoModel) {
         transacaoModels.add(transacaoModel);
