@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.DoubleSummaryStatistics;
 import java.util.List;
@@ -52,6 +53,14 @@ public class TransacaoController {
     ResponseEntity<EstatisticaResDto> calculateStatistic() {
         List<TransacaoModel> transacaoModels = this.transacaoRespository.findAllTransactions();
 
+        OffsetDateTime dateActual = OffsetDateTime.now();
+
+        Duration duration = Duration.between(transacaoModels.getLast().getDataHora(), dateActual);
+
+        if (duration.getSeconds() > 60) {
+            return ResponseEntity.status(HttpStatus.OK).body(new EstatisticaResDto(0l,0.0,0.0,0.0,0.0));
+        }
+
         DoubleSummaryStatistics statistics = transacaoModels.stream()
                 .mapToDouble(TransacaoModel::getValor)
                 .summaryStatistics();
@@ -66,5 +75,10 @@ public class TransacaoController {
 
         return ResponseEntity.status(HttpStatus.OK).body(estatisticaResDto);
 
+    }
+
+    @GetMapping("generate")
+    String act() {
+        return OffsetDateTime.now().toString();
     }
 }
