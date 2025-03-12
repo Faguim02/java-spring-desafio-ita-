@@ -19,32 +19,17 @@ public class TransacaoRepositoryTest {
     @InjectMocks
     private TransacaoRespository transacaoRespository;
 
-    @Nested
-    class Save {
+    @Test
+    void shoudSaveTransaction() {
+        TransacaoModel transacaoModel = new TransacaoModel();
+        transacaoModel.setValor(10.5);
+        transacaoModel.setDataHora(OffsetDateTime.now());
 
-        @Test
-        void shoudSaveTransaction() {
-            TransacaoModel transacaoModel = new TransacaoModel();
-            transacaoModel.setValor(10.5);
-            transacaoModel.setDataHora(OffsetDateTime.now());
+        transacaoRespository.save(transacaoModel);
 
-            transacaoRespository.save(transacaoModel);
+        List<TransacaoModel> transacaoModels = transacaoRespository.findAllTransactions();
 
-            List<TransacaoModel> transacaoModels = transacaoRespository.findAllTransactions();
-
-            Assertions.assertEquals(transacaoModels.getFirst(), transacaoModel);
-
-        }
-
-    }
-
-    @Nested
-    class Clear {
-
-    }
-
-    @Nested
-    class FindAllTransaction {
+        Assertions.assertEquals(transacaoModels.getFirst(), transacaoModel);
 
     }
 
