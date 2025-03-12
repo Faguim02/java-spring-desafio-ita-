@@ -4,8 +4,6 @@ import com.example.itau.dto.EstatisticaResDto;
 import com.example.itau.model.TransacaoModel;
 import com.example.itau.repository.TransacaoRespository;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -83,8 +81,8 @@ public class TransacaoController {
 
     @Operation(summary = "calcular estatisticas", description = "essa rota, retorna uma estatisca de suas transações na data estimada")
     @ApiResponse(responseCode = "200", description = "Um JSON com os campos count, sum, avg, min e max todos preenchidos com seus respectivos valores")
-    @GetMapping("/estatistica")
-    ResponseEntity<EstatisticaResDto> calculateStatistic() {
+    @GetMapping("/estatistica/{time}")
+    ResponseEntity<EstatisticaResDto> calculateStatistic(@PathVariable("time") Long time) {
         logger.log(Level.INFO, "Buscando transações...");
 
         List<TransacaoModel> transacaoModels = this.transacaoRespository.findAllTransactions();
@@ -95,8 +93,8 @@ public class TransacaoController {
 
         logger.log(Level.INFO, "Verificando data das transações...");
 
-        if (duration.getSeconds() > 60) {
-            logger.log(Level.WARNING, "a data das transações foram a mais de 60 segundos atrás");
+        if (duration.getSeconds() > time) {
+            logger.log(Level.WARNING, "a data das transações foram a mais de "+time+" segundos atrás");
             return ResponseEntity.status(HttpStatus.OK).body(new EstatisticaResDto(0L,0.0,0.0,0.0,0.0));
         }
 
