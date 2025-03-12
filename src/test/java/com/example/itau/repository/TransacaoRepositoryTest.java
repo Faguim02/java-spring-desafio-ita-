@@ -43,4 +43,14 @@ public class TransacaoRepositoryTest {
         Assertions.assertEquals(transacaoRespository.findAllTransactions(), new CopyOnWriteArrayList<>());
     }
 
+    @Test
+    void shouldReturnAllTransactions() {
+        this.shoudSaveTransaction();
+
+        List<TransacaoModel> transacaoModels = transacaoRespository.findAllTransactions();
+
+        Assertions.assertEquals(1, transacaoModels.size());
+
+    }
+
 }
