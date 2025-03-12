@@ -79,7 +79,7 @@ public class TransacaoController {
 
         if (duration.getSeconds() > 60) {
             logger.log(Level.WARNING, "a data das transações foram a mais de 60 segundos atrás");
-            return ResponseEntity.status(HttpStatus.OK).body(new EstatisticaResDto(0l,0.0,0.0,0.0,0.0));
+            return ResponseEntity.status(HttpStatus.OK).body(new EstatisticaResDto(0L,0.0,0.0,0.0,0.0));
         }
 
         logger.log(Level.INFO, "Calculando...");
