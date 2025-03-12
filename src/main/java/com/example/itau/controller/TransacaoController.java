@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.util.StopWatch;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Duration;
@@ -84,6 +85,9 @@ public class TransacaoController {
 
         logger.log(Level.INFO, "Calculando...");
 
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start();
+
         DoubleSummaryStatistics statistics = transacaoModels.stream()
                 .mapToDouble(TransacaoModel::getValor)
                 .summaryStatistics();
@@ -96,7 +100,9 @@ public class TransacaoController {
                 statistics.getMax()
         );
 
-        logger.log(Level.INFO, "OK!");
+        stopWatch.stop();
+
+        logger.log(Level.INFO, "OK! foram gastos " + stopWatch.getTotalTimeMillis() + " ms para calcular as estastisticas");
 
         return ResponseEntity.status(HttpStatus.OK).body(estatisticaResDto);
 
